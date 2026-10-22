@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "1.0",
+  "name": "book-maker",
+  "slashCommand": "/book-maker",
+  "triggers": [
+    {"kind": "slash", "value": "/book-maker"},
+    {"kind": "natural-language", "value": "write me a book on X"},
+    {"kind": "natural-language", "value": "build a book about X"},
+    {"kind": "natural-language", "value": "produce a non-fiction book"},
+    {"kind": "natural-language", "value": "generate a book on X"},
+    {"kind": "natural-language", "value": "create a book about X"}
+  ],
+  "verdicts": ["BOOK_SHIPPED", "CLAIMS_UNVERIFIED", "NARRATIVE_BROKEN", "SCOPE_TOO_VAGUE"],
+  "antiPattern": "\"I can write the chapters without building the narrative skeleton first, and the prose is fluent enough that the claims don't need independent verification.\"",
+  "targetPath": "/Users/hook/Documents/coding/python/Personal_AI  Projects/book_maker",
+  "pluginMode": "new"
+}

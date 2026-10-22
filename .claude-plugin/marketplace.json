@@ -1,0 +1,18 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "book-maker",
+  "description": "Marketplace for the book-maker Claude Code plugin.",
+  "owner": {
+    "name": "Anton Chepaldin",
+    "email": "anton.100chepaldin@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "book-maker",
+      "source": "./",
+      "description": "Produce claim-verified, narratively coherent non-fiction books as PDF.",
+      "category": "research",
+      "keywords": ["book", "pdf", "narrative", "verification", "non-fiction"]
+    }
+  ]
+}

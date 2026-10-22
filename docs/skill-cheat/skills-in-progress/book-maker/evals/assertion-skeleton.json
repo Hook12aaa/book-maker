@@ -1,0 +1,101 @@
+{
+  "skillName": "book-maker",
+  "assertions": [
+    {
+      "type": "hard-gate-violation-absent",
+      "pattern": "Do NOT proceed without an explicit topic, voice anchor, and book mode declared by the user. STOP and ask.",
+      "evidence": "run output must not violate hard-gate id=1",
+      "id": 1
+    },
+    {
+      "type": "hard-gate-violation-absent",
+      "pattern": "Do NOT begin chapter drafting until the narrative skeleton passes all pre-draft validation gates. STOP and fix the skeleton.",
+      "evidence": "run output must not violate hard-gate id=2",
+      "id": 2
+    },
+    {
+      "type": "hard-gate-violation-absent",
+      "pattern": "Do NOT begin chapter drafting until every load-bearing claim carries a verifier verdict. STOP and emit CLAIMS_UNVERIFIED.",
+      "evidence": "run output must not violate hard-gate id=3",
+      "id": 3
+    },
+    {
+      "type": "hard-gate-violation-absent",
+      "pattern": "Never draft chapters in parallel. STOP and draft sequentially so each chapter knows what came before.",
+      "evidence": "run output must not violate hard-gate id=4",
+      "id": 4
+    },
+    {
+      "type": "hard-gate-violation-absent",
+      "pattern": "Never emit a figure whose layout is scattered or free-form. STOP and re-spec as a structured layout.",
+      "evidence": "run output must not violate hard-gate id=5",
+      "id": 5
+    },
+    {
+      "type": "hard-gate-violation-absent",
+      "pattern": "Never invoke the Artifact tool. STOP and write output to the filesystem as PDF only.",
+      "evidence": "run output must not violate hard-gate id=6",
+      "id": 6
+    },
+    {
+      "type": "hard-gate-violation-absent",
+      "pattern": "Never produce the final PDF from a path other than rendered HTML. STOP and reroute through the HTML renderer.",
+      "evidence": "run output must not violate hard-gate id=7",
+      "id": 7
+    },
+    {
+      "type": "hard-gate-violation-absent",
+      "pattern": "Do NOT emit BOOK_SHIPPED unless every claim is verified, all 8 continuity gates pass, and the post-render verifier passes. STOP and emit the appropriate failure verdict.",
+      "evidence": "run output must not violate hard-gate id=8",
+      "id": 8
+    },
+    {
+      "type": "gate-function-question",
+      "pattern": "BEFORE spawning research subagents: Has the user named topic, voice anchor, and book mode?",
+      "evidence": "agent must behave as if the answer to the question is known before spawning research subagents",
+      "id": 9
+    },
+    {
+      "type": "gate-function-question",
+      "pattern": "BEFORE building the narrative spine: Does every load-bearing claim resolve to a `verified` verdict?",
+      "evidence": "agent must behave as if the answer to the question is known before building the narrative spine",
+      "id": 10
+    },
+    {
+      "type": "gate-function-question",
+      "pattern": "BEFORE beginning chapter drafting: Did all 6 pre-draft skeleton validation gates pass?",
+      "evidence": "agent must behave as if the answer to the question is known before beginning chapter drafting",
+      "id": 11
+    },
+    {
+      "type": "gate-function-question",
+      "pattern": "BEFORE drafting chapter N+1: Is chapter N fully drafted and its threads registered in the bible?",
+      "evidence": "agent must behave as if the answer to the question is known before drafting chapter N+1",
+      "id": 12
+    },
+    {
+      "type": "gate-function-question",
+      "pattern": "BEFORE accepting a figure spec: Is this layout one of the four permitted families: hierarchy, sequence, matrix, or table?",
+      "evidence": "agent must behave as if the answer to the question is known before accepting a figure spec",
+      "id": 13
+    },
+    {
+      "type": "gate-function-question",
+      "pattern": "BEFORE entering the HTML render: Did all 8 continuity gates pass and are all endnotes assembled?",
+      "evidence": "agent must behave as if the answer to the question is known before entering the HTML render",
+      "id": 14
+    },
+    {
+      "type": "gate-function-question",
+      "pattern": "BEFORE emitting BOOK_SHIPPED: Did the PDF originate exclusively from the HTML renderer, did every continuity gate pass, and is every claim verified?",
+      "evidence": "agent must behave as if the answer to the question is known before emitting BOOK_SHIPPED",
+      "id": 15
+    },
+    {
+      "type": "gate-function-question",
+      "pattern": "BEFORE invoking any output tool: Am I about to invoke the Artifact tool?",
+      "evidence": "agent must behave as if the answer to the question is known before invoking any output tool",
+      "id": 16
+    }
+  ]
+}

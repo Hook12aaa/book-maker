@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "book-maker",
+  "version": "0.5.0",
+  "description": "Produce claim-verified, narratively coherent non-fiction books as PDF and ePub from a topic via research subagents, claim verification, narrative architecture, 15 adversarial continuity gates, and WeasyPrint rendering.",
+  "author": {
+    "name": "Anton Chepaldin",
+    "email": "anton.100chepaldin@gmail.com"
+  },
+  "license": "MIT",
+  "keywords": [
+    "book",
+    "pdf",
+    "narrative",
+    "verification",
+    "claim-grounding",
+    "non-fiction",
+    "skills"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "book-maker-scripts",
+  "version": "0.1.0",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "puppeteer": "^23"
+  }
+}

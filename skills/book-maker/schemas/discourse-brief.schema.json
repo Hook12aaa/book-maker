@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Discourse Brief",
+  "description": "Per-chapter rhetorical plan produced by the narrative-briefer agent. Encodes the discourse layer: how to tell the chapter's story, not what the chapter contains.",
+  "type": "object",
+  "required": [
+    "chapter_id",
+    "title",
+    "value_shift",
+    "chapter_form",
+    "opening_mode",
+    "nut_graf",
+    "beats",
+    "evidence_weaving",
+    "closing_pull"
+  ],
+  "properties": {
+    "chapter_id": {
+      "type": "string",
+      "pattern": "^ch\\d{2}$",
+      "description": "Canonical chapter identifier matching the architecture."
+    },
+    "title": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 120
+    },
+    "value_shift": {
+      "type": "object",
+      "description": "The reader's belief transformation across this chapter.",
+      "required": ["before", "after"],
+      "properties": {
+        "before": {
+          "type": "string",
+          "description": "What the reader believes entering the chapter."
+        },
+        "after": {
+          "type": "string",
+          "description": "What the reader believes leaving the chapter."
+        }
+      },
+      "additionalProperties": false
+    },
+    "chapter_form": {
+      "type": "string",
+      "enum": ["story", "layer_cake"],
+      "description": "story: single arc (complication → resolution). layer_cake: action line with explanatory digressions."
+    },
+    "opening_mode": {
+      "type": "string",
+      "enum": ["scene", "claim", "question", "contrast", "data"],
+      "description": "How the chapter opens. No two adjacent chapters should use the same mode."
+    },
+    "nut_graf": {
+      "type": "object",
+      "description": "The paragraph that names the chapter's driving question and urgency.",
+      "required": ["paragraph_position", "question", "urgency"],
+      "properties": {
+        "paragraph_position": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 6,
+          "description": "Which paragraph (2-6) carries the nut graf. Paragraph 1 is the hook."
+        },
+        "question": {
+          "type": "string",
+          "description": "The driving question this chapter exists to answer."
+        },
+        "urgency": {
+          "type": "string",
+          "description": "Why this question demands an answer now."
+        }
+      },
+      "additionalProperties": false
+    },
+    "beats": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 12,
+      "description": "Rhetorical sequence of scene and exposition beats. This is NOT a heading list — it is the chapter's argumentative rhythm.",
+      "items": {
+        "type": "object",
+        "required": ["beat_id", "mode", "purpose", "known", "new"],
+        "properties": {
+          "beat_id": {
+            "type": "string",
+            "pattern": "^ch\\d{2}_b\\d{2}$"
+          },
+          "mode": {
+            "type": "string",
+            "enum": ["scene", "exposition"],
+            "description": "scene: concrete, immersive, specific. exposition: analytical, contextual, general."
+          },
+          "purpose": {
+            "type": "string",
+            "description": "What this beat does for the reader."
+          },
+          "known": {
+            "type": "string",
+            "description": "What the reader knows entering this beat (from the previous beat or chapter)."
+          },
+          "new": {
+            "type": "string",
+            "description": "What the reader learns from this beat. Becomes the 'known' for the next beat."
+          },
+          "show_tell_sowhat": {
+            "type": "object",
+            "description": "Optional. The show-tell-so-what micro-pattern for this beat.",
+            "properties": {
+              "show": {
+                "type": "string",
+                "description": "A concrete example, scene, or anecdote."
+              },
+              "tell": {
+                "type": "string",
+                "description": "The analytical point the example illustrates."
+              },
+              "so_what": {
+                "type": "string",
+                "description": "Why it matters to the reader or the book's thesis."
+              }
+            },
+            "required": ["show", "tell", "so_what"],
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "evidence_weaving": {
+      "type": "array",
+      "description": "How verified claims arrive in the chapter — as stories, examples, data points, or contrasts.",
+      "items": {
+        "type": "object",
+        "required": ["claim_id", "arrives_as", "human_consequence"],
+        "properties": {
+          "claim_id": {
+            "type": "string",
+            "description": "References a row in book/claims.jsonl."
+          },
+          "arrives_as": {
+            "type": "string",
+            "enum": ["story", "example", "data_point", "contrast"],
+            "description": "The rhetorical vehicle for this claim."
+          },
+          "human_consequence": {
+            "type": "string",
+            "description": "What this claim means for a person, not what it means as a data point."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "closing_pull": {
+      "type": "string",
+      "minLength": 50,
+      "maxLength": 500,
+      "description": "How the final paragraph creates momentum toward the next chapter."
+    },
+    "chapter_bans": {
+      "type": "array",
+      "description": "Chapter-specific negative constraints beyond global style rules.",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": false
+}

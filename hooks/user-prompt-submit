@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+trap 'exit 0' ERR
+
+source "${CLAUDE_PLUGIN_ROOT}/config.sh"
+source "${CLAUDE_PLUGIN_ROOT}/hooks/lib/emit-context.sh"
+source "${CLAUDE_PLUGIN_ROOT}/hooks/lib/detect-skill-intent.sh"
+
+payload="$(cat)"
+prompt="$(printf '%s' "$payload" | jq -r '.prompt // empty' 2>/dev/null || true)"
+[[ -z "$prompt" ]] && exit 0
+
+if detect_skill_intent "$prompt" "${BOOK_MAKER_TRIGGER_KEYWORDS[@]}"; then
+  emit_context "BOOK-MAKER INTENT DETECTED. Invoke /book-maker before any other action."
+fi

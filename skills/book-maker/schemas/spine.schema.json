@@ -1,0 +1,174 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://book-maker/spine.schema.json",
+  "title": "book-maker spine",
+  "description": "The book's through-line: thesis, arc, and accumulation architecture. Built after research is verified, before architecture. The accumulation fields (global_value_shift, leitmotifs, narrator_arc, weight_trajectory, recapitulation_targets) transform the book from a collection of chapters into a progressive experience where each chapter carries the emotional residue of everything before it.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["thesis", "thesis_expanded", "arc", "global_value_shift", "leitmotifs", "narrator_arc"],
+  "properties": {
+    "thesis": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 300,
+      "description": "One-sentence thesis statement for the entire book."
+    },
+    "thesis_expanded": {
+      "type": "string",
+      "minLength": 50,
+      "maxLength": 1500,
+      "description": "One-paragraph expansion: setup, three complications, resolution."
+    },
+    "arc": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 7,
+      "items": { "$ref": "#/$defs/arc_beat" }
+    },
+    "global_value_shift": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reader_enters", "reader_exits"],
+      "properties": {
+        "reader_enters": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 500,
+          "description": "What the reader believes and feels about the subject before reading. Not just knowledge state — emotional stance."
+        },
+        "reader_exits": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 500,
+          "description": "What the reader believes and feels after the final page. The emotional distance from entry to exit is the book's weight."
+        }
+      },
+      "description": "The book-level emotional transformation. Each chapter's value shift is a progressive complication of this global shift."
+    },
+    "leitmotifs": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 4,
+      "items": { "$ref": "#/$defs/leitmotif" },
+      "description": "Concrete images, phrases, or scenes that recur across 3+ chapters with transforming meaning. A leitmotif is not a concept (those are threads). It is a specific sensory detail whose emotional weight changes as the reader accumulates experience."
+    },
+    "narrator_arc": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stance_early", "stance_mid", "stance_late"],
+      "properties": {
+        "stance_early": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "The narrator's relationship to the material in the first third: curious, investigating, observing."
+        },
+        "stance_mid": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "The narrator's relationship in the middle: troubled, committed, surprised, challenged."
+        },
+        "stance_late": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "The narrator's relationship in the final third: resolved, transformed, urgently committed, humbled."
+        }
+      },
+      "description": "How the narrator changes across the book. The narrator at chapter 10 is not the same narrator as chapter 1. The voice itself carries the accumulation."
+    },
+    "weight_trajectory": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/weight_marker" },
+      "description": "The emotional weight the reader carries at each chapter boundary. Stakes must escalate — no chapter's weight is lower than the previous."
+    },
+    "recapitulation_targets": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 6,
+      "items": { "$ref": "#/$defs/recap_target" },
+      "description": "Specific details from early chapters that the final chapter revisits in transformed context. The reader recognises the detail but experiences it differently because of everything that happened between."
+    }
+  },
+  "$defs": {
+    "arc_beat": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["beat", "chapters", "movement"],
+      "properties": {
+        "beat": {
+          "enum": ["setup", "investigation", "evidence", "synthesis", "resolution"]
+        },
+        "chapters": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "items": { "$ref": "#/$defs/chapter_ref" }
+        },
+        "movement": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 400,
+          "description": "What the reader learns or experiences during this beat."
+        }
+      }
+    },
+    "chapter_ref": {
+      "type": "string",
+      "pattern": "^ch\\d{2}$"
+    },
+    "leitmotif": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["image", "first_appearance", "appearances"],
+      "properties": {
+        "image": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "The concrete sensory detail: a phrase, an image, a scene fragment. Not an abstract concept."
+        },
+        "first_appearance": { "$ref": "#/$defs/chapter_ref" },
+        "appearances": {
+          "type": "array",
+          "minItems": 3,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["chapter", "meaning"],
+            "properties": {
+              "chapter": { "$ref": "#/$defs/chapter_ref" },
+              "meaning": {
+                "type": "string",
+                "maxLength": 200,
+                "description": "What the image means at this point in the book — must differ from every other appearance."
+              }
+            }
+          }
+        }
+      }
+    },
+    "weight_marker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["after_chapter", "weight"],
+      "properties": {
+        "after_chapter": { "$ref": "#/$defs/chapter_ref" },
+        "weight": {
+          "type": "string",
+          "maxLength": 300,
+          "description": "What the reader FEELS about what they know at this point. Not what they know — what it weighs."
+        }
+      }
+    },
+    "recap_target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["detail", "source_chapter", "target_chapter", "original_meaning", "transformed_meaning"],
+      "properties": {
+        "detail": { "type": "string", "maxLength": 200 },
+        "source_chapter": { "$ref": "#/$defs/chapter_ref" },
+        "target_chapter": { "$ref": "#/$defs/chapter_ref" },
+        "original_meaning": { "type": "string", "maxLength": 200 },
+        "transformed_meaning": { "type": "string", "maxLength": 200 }
+      }
+    }
+  }
+}

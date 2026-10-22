@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "1.0",
+  "hardGates": [
+    {"id": 1, "body": "Do NOT proceed without an explicit topic, voice anchor, and book mode declared by the user. STOP and ask."},
+    {"id": 2, "body": "Do NOT begin chapter drafting until the narrative skeleton passes all pre-draft validation gates. STOP and fix the skeleton."},
+    {"id": 3, "body": "Do NOT begin chapter drafting until every load-bearing claim carries a verifier verdict. STOP and emit CLAIMS_UNVERIFIED."},
+    {"id": 4, "body": "Never draft chapters in parallel. STOP and draft sequentially so each chapter knows what came before."},
+    {"id": 5, "body": "Never emit a figure whose layout is scattered or free-form. STOP and re-spec as a structured layout."},
+    {"id": 6, "body": "Never invoke the Artifact tool. STOP and write output to the filesystem as PDF only."},
+    {"id": 7, "body": "Never produce the final PDF from a path other than rendered HTML. STOP and reroute through the HTML renderer."},
+    {"id": 8, "body": "Do NOT emit BOOK_SHIPPED unless every claim is verified, all 8 continuity gates pass, and the post-render verifier passes. STOP and emit the appropriate failure verdict."}
+  ],
+  "gateFunctions": [
+    {"before": "spawning research subagents", "question": "Has the user named topic, voice anchor, and book mode?"},
+    {"before": "building the narrative spine", "question": "Does every load-bearing claim resolve to a `verified` verdict?"},
+    {"before": "beginning chapter drafting", "question": "Did all 6 pre-draft skeleton validation gates pass?"},
+    {"before": "drafting chapter N+1", "question": "Is chapter N fully drafted and its threads registered in the bible?"},
+    {"before": "accepting a figure spec", "question": "Is this layout one of the four permitted families: hierarchy, sequence, matrix, or table?"},
+    {"before": "entering the HTML render", "question": "Did all 8 continuity gates pass and are all endnotes assembled?"},
+    {"before": "emitting BOOK_SHIPPED", "question": "Did the PDF originate exclusively from the HTML renderer, did every continuity gate pass, and is every claim verified?"},
+    {"before": "invoking any output tool", "question": "Am I about to invoke the Artifact tool?"}
+  ],
+  "antiPatternFirstSentence": "\"I can write the chapters without building the narrative skeleton first, and the prose is fluent enough that the claims don't need independent verification.\"",
+  "checklistSteps": [
+    "Confirm topic, voice anchor, and book mode with the user.",
+    "Decompose the topic into research themes.",
+    "Spawn one research subagent per theme and collect their markdown drafts.",
+    "Extract every load-bearing claim into a claims ledger and run the verification sidecar.",
+    "Build the narrative spine (thesis + 5-beat arc).",
+    "Build the architecture (chapter skeleton with entry/exit beliefs, concept cards, argument DAG).",
+    "Build the thread registry and transition contracts.",
+    "Validate the skeleton against 6 pre-draft gates.",
+    "Draft chapters sequentially, growing the bible during drafting.",
+    "Run the 8-gate continuity review with a separate agent.",
+    "Assemble per-chapter endnotes with clickable source URLs.",
+    "Spec, render, and measure figures.",
+    "Assemble the HTML document and print to PDF via headless browser.",
+    "Run the post-render verifier.",
+    "Emit the verdict token."
+  ]
+}

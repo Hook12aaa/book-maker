@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://book-maker/grid.schema.json",
+  "title": "book-maker Story Grid",
+  "description": "Per-section value charges and polarity tracking. Adapted from Shawn Coyne's Story Grid. Plots the emotional and intellectual arc of the book by tracking what value shifts in each section.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["sections"],
+  "properties": {
+    "sections": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/grid_entry" }
+    }
+  },
+  "$defs": {
+    "grid_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "section_id", "chapter", "function",
+        "value_at_stake", "polarity_before", "polarity_after",
+        "turning_point", "claims_used", "threads_advanced"
+      ],
+      "properties": {
+        "section_id": { "type": "string", "pattern": "^ch\\d{2}_s\\d{2}$" },
+        "chapter": { "type": "string", "pattern": "^ch\\d{2}$" },
+        "function": {
+          "enum": ["orient", "establish", "complicate", "evidence", "synthesize", "pivot", "resolve", "bridge"]
+        },
+        "value_at_stake": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 200,
+          "description": "What the reader's understanding shifts on (e.g. unknown→known, intuitive→counterintuitive)."
+        },
+        "polarity_before": { "enum": ["+", "-", "0"] },
+        "polarity_after": { "enum": ["+", "-", "0"] },
+        "turning_point": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 300,
+          "description": "The specific moment the value shifts."
+        },
+        "claims_used": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "threads_advanced": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}

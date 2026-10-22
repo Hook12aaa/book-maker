@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://book-maker/endnote.schema.json",
+  "title": "book-maker chapter endnotes",
+  "description": "Per-chapter endnotes with numbered superscripts and clickable source URLs. One file per chapter in book/endnotes/.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["chapter_id", "endnotes"],
+  "properties": {
+    "chapter_id": {
+      "type": "string",
+      "pattern": "^ch\\d{2}$"
+    },
+    "endnotes": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/endnote" }
+    }
+  },
+  "$defs": {
+    "endnote": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["number", "text", "url", "in_text_location"],
+      "properties": {
+        "number": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Sequential number starting from 1 per chapter."
+        },
+        "text": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 500,
+          "description": "Full citation text (author, title, publication, date)."
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Clickable source URL."
+        },
+        "in_text_location": {
+          "type": "string",
+          "description": "Section and paragraph where this citation appears (e.g. ch03_s02_p04)."
+        }
+      }
+    }
+  }
+}

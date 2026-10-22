@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://book-maker/architecture.schema.json",
+  "title": "book-maker architecture",
+  "description": "Chapter skeleton with entry/exit beliefs, thematic directions, and forward/backward connections. Each chapter knows its role in the arc. The architecture constrains the argument, not the document structure.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["chapters"],
+  "properties": {
+    "chapters": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 30,
+      "items": { "$ref": "#/$defs/chapter" }
+    }
+  },
+  "$defs": {
+    "chapter_ref": {
+      "type": "string",
+      "pattern": "^ch\\d{2}$"
+    },
+    "opening_mode": {
+      "enum": ["scene", "claim", "question", "contrast", "data"]
+    },
+    "chapter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "chapter_id", "title", "part", "part_title", "beat",
+        "central_argument", "thematic_directions", "key_claims", "opening_mode",
+        "reader_enters_believing", "reader_exits_believing",
+        "connects_forward", "connects_backward"
+      ],
+      "properties": {
+        "chapter_id": { "$ref": "#/$defs/chapter_ref" },
+        "title": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "part": { "type": "string", "pattern": "^part_\\d+$" },
+        "part_title": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "beat": {
+          "enum": ["setup", "investigation", "evidence", "synthesis", "resolution"]
+        },
+        "central_argument": { "type": "string", "minLength": 10, "maxLength": 500 },
+        "thematic_directions": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 4,
+          "items": { "type": "string", "minLength": 5, "maxLength": 200 }
+        },
+        "key_claims": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "opening_mode": { "$ref": "#/$defs/opening_mode" },
+        "reader_enters_believing": { "type": "string", "minLength": 10, "maxLength": 500 },
+        "reader_exits_believing": { "type": "string", "minLength": 10, "maxLength": 500 },
+        "connects_forward": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "connects_backward": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}

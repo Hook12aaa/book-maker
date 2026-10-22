@@ -1,0 +1,25 @@
+# Generated output
+*.pdf
+book/
+
+# Superpowers working state
+.superpowers/
+
+# Skill-cheat QA runs
+.skill-cheat-qa/
+
+# Node
+node_modules/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

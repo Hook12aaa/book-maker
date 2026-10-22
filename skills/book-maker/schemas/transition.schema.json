@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://book-maker/transition.schema.json",
+  "title": "book-maker transition contracts",
+  "description": "Chapter-to-chapter bridge specifications. Each entry defines what the reader believes AND feels at the end of one chapter and what the next chapter assumes. The bridge paragraph creates narrative pull. The emotional fields track accumulation — what weight the reader carries from one chapter to the next.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["transitions"],
+  "properties": {
+    "transitions": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/transition" }
+    }
+  },
+  "$defs": {
+    "transition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from_chapter", "exit_state", "emotional_exit", "bridge_paragraph", "to_chapter", "entry_assumption", "emotional_entry"],
+      "properties": {
+        "from_chapter": { "type": "string", "pattern": "^ch\\d{2}$" },
+        "exit_state": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 500,
+          "description": "What the reader now believes or knows after finishing this chapter."
+        },
+        "emotional_exit": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 500,
+          "description": "What the reader FEELS leaving this chapter. Not information state — emotional residue. Uncomfortable? Energised? Troubled? Carrying the weight of a specific image or moment?"
+        },
+        "bridge_paragraph": {
+          "type": "string",
+          "minLength": 50,
+          "maxLength": 500,
+          "description": "A 2-4 sentence transitional paragraph that creates pull into the next chapter."
+        },
+        "to_chapter": { "type": "string", "pattern": "^ch\\d{2}$" },
+        "entry_assumption": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 500,
+          "description": "What the next chapter expects the reader to already know."
+        },
+        "emotional_entry": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 500,
+          "description": "What the next chapter expects the reader to FEEL. The opening must meet the reader where the previous chapter left them emotionally, not reset to neutral."
+        },
+        "callback_available": {
+          "type": "array",
+          "items": { "type": "string", "maxLength": 200 },
+          "description": "Details seeded in previous chapters that are now available for callback. The next chapter may harvest any of these to create recontextualization."
+        }
+      }
+    }
+  }
+}

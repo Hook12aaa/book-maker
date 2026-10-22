@@ -1,0 +1,335 @@
+/* epub.css — Reflowable ePub3 stylesheet for book-maker
+   Derived from print.css. Strips print-specific rules (@page, fixed units,
+   running headers, page counters). Replaces pt/mm with em/%. */
+
+html, body {
+  margin: 1em;
+  padding: 0;
+  font-family: "Source Serif Pro", "Georgia", "Times New Roman", serif;
+  font-size: 1em;
+  line-height: 1.45;
+  color: #111;
+}
+
+/* --- Title page --- */
+
+.title-page {
+  text-align: center;
+  margin: 3em 0;
+  break-after: always;
+}
+
+.title-page .book-title {
+  font-size: 2.4em;
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 0 0 0.5em;
+  color: #1a3c2a;
+}
+
+.title-page .book-subtitle {
+  font-size: 1.3em;
+  font-weight: 400;
+  font-style: italic;
+  margin: 0 0 1em;
+  color: #333;
+}
+
+.title-page .book-type {
+  font-family: "Helvetica", "Arial", sans-serif;
+  font-size: 0.85em;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #666;
+  margin: 0 0 1.5em;
+}
+
+.title-page .book-author {
+  font-size: 1em;
+  margin: 0 0 0.3em;
+  color: #333;
+}
+
+.title-page .book-date {
+  font-size: 0.85em;
+  color: #666;
+}
+
+/* --- Table of contents --- */
+
+nav[epub|type="toc"] ol {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+nav[epub|type="toc"] ol ol {
+  padding-left: 1.5em;
+}
+
+nav[epub|type="toc"] li {
+  margin: 0.3em 0;
+}
+
+nav[epub|type="toc"] a {
+  color: #1a5c8a;
+  text-decoration: none;
+}
+
+.toc {
+  break-after: always;
+}
+
+.toc h1 {
+  font-size: 1.8em;
+  border-bottom: 1px solid #222;
+  padding-bottom: 0.4em;
+  margin-bottom: 0.8em;
+}
+
+.toc .toc-part {
+  font-size: 1.15em;
+  font-weight: 700;
+  color: #1a3c2a;
+  margin: 0.8em 0 0.3em;
+}
+
+.toc .toc-entry {
+  padding: 0.15em 0 0.15em 1em;
+  font-size: 0.95em;
+}
+
+.toc .toc-entry a {
+  color: #1a5c8a;
+  text-decoration: none;
+}
+
+/* --- Part dividers --- */
+
+.part-divider {
+  text-align: center;
+  margin: 4em 0;
+  break-before: always;
+  break-after: always;
+}
+
+.part-divider .part-label {
+  font-family: "Helvetica", "Arial", sans-serif;
+  font-size: 0.85em;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #666;
+  margin: 0 0 0.5em;
+}
+
+.part-divider .part-title {
+  font-size: 1.8em;
+  font-weight: 700;
+  color: #1a3c2a;
+  margin: 0;
+}
+
+/* --- Chapter headings --- */
+
+h1 { font-size: 1.8em; line-height: 1.2; margin: 0 0 0.6em; font-weight: 700; break-after: avoid; }
+h1.chapter { break-before: always; }
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0; }
+h2 { font-size: 1.3em; line-height: 1.25; margin: 1.2em 0 0.4em; font-weight: 700; break-after: avoid; }
+h3 { font-size: 1.1em; line-height: 1.3;  margin: 1em 0 0.3em; font-weight: 700; break-after: avoid; }
+h4 { font-size: 1em;   line-height: 1.3;  margin: 0.8em 0 0.2em; font-weight: 700; break-after: avoid; }
+
+p {
+  margin: 0;
+  text-indent: 1.5em;
+  widows: 3;
+  orphans: 3;
+}
+
+h1 + p, h2 + p, h3 + p, h4 + p,
+.scene-break + p {
+  text-indent: 0;
+}
+
+strong { font-weight: 700; }
+em { font-style: italic; }
+
+/* --- Code --- */
+
+code, pre, .mono {
+  font-family: "Menlo", "Consolas", monospace;
+  font-size: 0.85em;
+}
+
+pre {
+  padding: 0.5em 0.6em;
+  background: #f5f5f7;
+  border: 1px solid #e2e2e6;
+  border-radius: 3px;
+  white-space: pre-wrap;
+  break-inside: avoid;
+}
+
+/* --- Images --- */
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* --- Figures --- */
+
+figure.figure {
+  margin: 0.8em 0;
+  text-align: center;
+  break-inside: avoid;
+}
+
+figure.figure svg,
+figure.figure table {
+  max-width: 100%;
+  height: auto;
+}
+
+figure.figure figcaption {
+  margin-top: 0.3em;
+  font-size: 0.85em;
+  color: #444;
+  font-style: italic;
+}
+
+/* --- Tables (figure-style) --- */
+
+table.figure-matrix,
+table.figure-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Helvetica", "Arial", sans-serif;
+  font-size: 0.9em;
+  break-inside: avoid;
+}
+
+table.figure-matrix thead th,
+table.figure-table thead th {
+  background: #f5f5f7;
+  border-bottom: 1px solid #222;
+  padding: 0.3em 0.5em;
+  font-weight: 700;
+  text-align: left;
+}
+
+table.figure-matrix tbody td,
+table.figure-table tbody td {
+  padding: 0.3em 0.5em;
+  border-bottom: 1px solid #ddd;
+  font-weight: 400;
+}
+
+table.figure-matrix tbody td b,
+table.figure-matrix tbody td strong,
+table.figure-table tbody td b,
+table.figure-table tbody td strong {
+  font-weight: 400;
+}
+
+/* ePub tables may overflow — allow horizontal scroll */
+.table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* --- Endnotes (ePub footnote/endnote pattern) --- */
+
+.chapter-endnotes {
+  margin-top: 1.5em;
+  padding-top: 0.8em;
+  border-top: 1px solid #999;
+  font-size: 0.85em;
+  line-height: 1.4;
+}
+
+.chapter-endnotes h3 {
+  font-size: 0.9em;
+  font-weight: 700;
+  margin: 0 0 0.5em;
+  color: #444;
+}
+
+.chapter-endnotes ol {
+  margin: 0;
+  padding-left: 1.5em;
+}
+
+.chapter-endnotes li {
+  margin-bottom: 0.25em;
+}
+
+aside[epub|type="footnote"] {
+  font-size: 0.85em;
+  line-height: 1.4;
+  margin: 0.5em 0;
+}
+
+.chapter-endnotes a,
+a[epub|type="noteref"] {
+  color: #1a5c8a;
+  text-decoration: none;
+}
+
+sup.endnote-ref {
+  font-size: 0.7em;
+  vertical-align: super;
+  line-height: 0;
+}
+
+sup.endnote-ref a {
+  color: #1a5c8a;
+  text-decoration: none;
+}
+
+/* --- Bibliography (back matter) --- */
+
+.bibliography {
+  break-before: always;
+}
+
+.bibliography h1 {
+  font-size: 1.8em;
+  border-bottom: 1px solid #222;
+  padding-bottom: 0.4em;
+}
+
+.bibliography .bib-entry {
+  font-size: 0.9em;
+  margin-bottom: 0.4em;
+  padding-left: 1.5em;
+  text-indent: -1.5em;
+}
+
+.bibliography .bib-entry a {
+  color: #1a5c8a;
+  text-decoration: none;
+  word-break: break-all;
+}
+
+/* --- Blockquotes (callouts) --- */
+
+blockquote {
+  margin: 0.8em 0 0.8em 2em;
+  padding: 0;
+  border-left: none;
+  background: none;
+  font-size: 0.95em;
+  font-style: italic;
+  break-inside: avoid;
+}
+
+.scene-break {
+  text-align: center;
+  margin: 1.5em 0;
+  letter-spacing: 0.5em;
+  color: #999;
+}
+
+blockquote p {
+  margin: 0;
+}

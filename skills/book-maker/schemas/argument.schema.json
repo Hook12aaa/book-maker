@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://book-maker/argument.schema.json",
+  "title": "book-maker argument dependency DAG",
+  "description": "Directed acyclic graph of argument dependencies. Each node is a claim that depends on prior established claims and supports downstream claims. Topological sort confirms no circular dependencies.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["arguments"],
+  "properties": {
+    "arguments": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/argument_node" }
+    }
+  },
+  "$defs": {
+    "argument_node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["node_id", "depends_on", "supports", "chapter", "section"],
+      "properties": {
+        "node_id": {
+          "type": "string",
+          "pattern": "^arg_[a-z0-9_]+$",
+          "maxLength": 64
+        },
+        "depends_on": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^arg_[a-z0-9_]+$" },
+          "description": "Argument nodes that must be established before this one."
+        },
+        "supports": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^arg_[a-z0-9_]+$" },
+          "description": "Argument nodes that this one provides evidence for."
+        },
+        "chapter": { "type": "string", "pattern": "^ch\\d{2}$" },
+        "section": { "type": "string", "pattern": "^ch\\d{2}_s\\d{2}$" }
+      }
+    }
+  }
+}

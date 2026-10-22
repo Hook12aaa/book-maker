@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://book-maker/concept.schema.json",
+  "title": "book-maker concept cards",
+  "description": "Track every key term and framework from introduction through reinforcement to challenge. Prevents forward-reference errors and ensures concepts earn their place through recurrence.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["concepts"],
+  "properties": {
+    "concepts": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/concept" }
+    }
+  },
+  "$defs": {
+    "concept": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["concept_id", "label", "first_introduced", "reinforced", "challenged", "assumed_known_after"],
+      "properties": {
+        "concept_id": {
+          "type": "string",
+          "pattern": "^concept_[a-z0-9_]+$",
+          "maxLength": 64
+        },
+        "label": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "first_introduced": { "$ref": "#/$defs/concept_point" },
+        "reinforced": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/concept_point" }
+        },
+        "challenged": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/concept_point" }
+        },
+        "assumed_known_after": {
+          "type": "string",
+          "pattern": "^ch\\d{2}$"
+        }
+      }
+    },
+    "concept_point": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["chapter", "context"],
+      "properties": {
+        "chapter": { "type": "string", "pattern": "^ch\\d{2}$" },
+        "context": { "type": "string", "minLength": 5, "maxLength": 300 }
+      }
+    }
+  }
+}

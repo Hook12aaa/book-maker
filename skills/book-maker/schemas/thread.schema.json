@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://book-maker/thread.schema.json",
+  "title": "book-maker thread registry entry",
+  "description": "One entry per narrative promise. Used in JSONL format (one JSON object per line in book/threads.jsonl). Tracks introduction, development, and resolution of every concept, question, anecdote, tension, metaphor, or case study.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["thread_id", "type", "introduced", "developed", "resolved", "status"],
+  "properties": {
+    "thread_id": {
+      "type": "string",
+      "pattern": "^thread_[a-z0-9_]+$",
+      "maxLength": 64
+    },
+    "type": {
+      "enum": ["question", "concept", "anecdote", "tension", "metaphor", "case_study"]
+    },
+    "introduced": { "$ref": "#/$defs/thread_point" },
+    "developed": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/thread_point" }
+    },
+    "resolved": {
+      "oneOf": [
+        { "$ref": "#/$defs/thread_point" },
+        { "type": "null" }
+      ]
+    },
+    "status": {
+      "enum": ["open", "developed", "resolved", "open-deliberate"]
+    }
+  },
+  "$defs": {
+    "thread_point": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["chapter", "section", "how"],
+      "properties": {
+        "chapter": { "type": "string", "pattern": "^ch\\d{2}$" },
+        "section": { "type": "string", "pattern": "^ch\\d{2}_s\\d{2}$" },
+        "how": { "type": "string", "minLength": 5, "maxLength": 300 }
+      }
+    }
+  }
+}
