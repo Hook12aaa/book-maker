@@ -113,16 +113,17 @@ The HTML must include a hidden book-title element immediately after `<main>` ope
 
 1. Assemble chapters in order from `book/chapters/`.
 2. Convert each chapter's markdown prose to HTML paragraphs. Apply HTML escaping to all prose text content at this step.
-3. For each chapter, inject endnote references from `book/endnotes/<chapter_id>.json` as raw `<sup class="endnote-ref">` tags AFTER the HTML escaping in step 2. Endnote injection must happen after escaping so the `<sup>` tags are emitted as live HTML, not as escaped entities. This is the critical ordering constraint — reversing steps 2 and 3 produces double-escaped endnote text.
-4. Preserve LaTeX delimiters: `<` and `>` inside `$...$` or `$$...$$` blocks must not be HTML-escaped. Scan for LaTeX delimiters before escaping and protect their contents, or process LaTeX blocks separately.
-5. For each figure reference (`{{fig:<id>}}`), render the figure spec into inline SVG or HTML and inline it.
-6. Generate the table of contents from `book/architecture.json`. Emit entries as anchor links: `<div class="toc-entry"><a href="#chNN">Chapter N: Title</a></div>`. WeasyPrint's CSS `target-counter` fills page numbers automatically. Do NOT use empty `<span class="toc-page">` elements. Use consistent chapter numbering (no zero-padding: "Chapter 1", not "Chapter 01").
-7. Generate the title page from `book/spine.json`. The subtitle on the title page is a short phrase (5-10 words), not the full thesis. If spine.json contains only the thesis, extract or compose a short subtitle from it. The full thesis belongs in a preface or back cover blurb, not the title page.
-8. Generate part divider pages.
-9. Wrap in `<!doctype html>` with inlined `assets/print.css`. Extend print.css with screen-reading styles (max-width body for browser viewing) but do not duplicate it — read the file and extend.
-10. Pre-render LaTeX math. Scan the assembled HTML for `$...$` (inline) and `$$...$$` (display) delimiters. Replace each with server-side rendered HTML using `katex.renderToString(latex, {displayMode: true/false})` via Node.js or `latex2mathml.converter.convert(latex)` via Python. WeasyPrint does not execute JavaScript. All math must be rendered to HTML/MathML/SVG before the PDF engine sees the document. If no LaTeX delimiters are found, this step is a no-op.
-11. Add a hidden book-title element for running headers: `<span class="book-title-string">BOOK TITLE</span>` immediately after `<main>` opens. WeasyPrint reads its `string-set` property to populate verso running headers.
-12. Render PDF via WeasyPrint: `weasyprint book.html book.pdf`. No JavaScript dependency. No wait-for-render timing. Ensure `<html lang="en">` for hyphenation.
+3. Strip residual markdown headers: scan all `<p>` elements. Any paragraph whose text content begins with one or more `#` characters followed by a space is a markdown header that survived conversion. Remove these elements — the chapter's `<h1>`, `<h2>`, `<h3>` elements are generated separately from the architecture, not from inline markdown headers. This is a validation step: if any `<p>#` elements remain after stripping, log a warning.
+4. For each chapter, inject endnote references from `book/endnotes/<chapter_id>.json` as raw `<sup class="endnote-ref">` tags AFTER the HTML escaping in step 2. Endnote injection must happen after escaping so the `<sup>` tags are emitted as live HTML, not as escaped entities. This is the critical ordering constraint — reversing steps 2 and 3 produces double-escaped endnote text.
+5. Preserve LaTeX delimiters: `<` and `>` inside `$...$` or `$$...$$` blocks must not be HTML-escaped. Scan for LaTeX delimiters before escaping and protect their contents, or process LaTeX blocks separately.
+6. For each figure reference (`{{fig:<id>}}`), render the figure spec into inline SVG or HTML and inline it.
+7. Generate the table of contents from `book/architecture.json`. Emit entries as anchor links: `<div class="toc-entry"><a href="#chNN">Chapter N: Title</a></div>`. WeasyPrint's CSS `target-counter` fills page numbers automatically. Do NOT use empty `<span class="toc-page">` elements. Use consistent chapter numbering (no zero-padding: "Chapter 1", not "Chapter 01").
+8. Generate the title page from `book/spine.json`. The subtitle on the title page is a short phrase (5-10 words), not the full thesis. If spine.json contains only the thesis, extract or compose a short subtitle from it. The full thesis belongs in a preface or back cover blurb, not the title page.
+9. Generate part divider pages.
+10. Wrap in `<!doctype html>` with inlined `assets/print.css`. Do NOT include `<link>` tags to external font services (Google Fonts, etc.) in the PDF HTML. WeasyPrint uses system fonts exclusively. External font links are ignored and add unnecessary network dependencies. Extend print.css with screen-reading styles (max-width body for browser viewing) but do not duplicate it — read the file and extend.
+11. Pre-render LaTeX math. Scan the assembled HTML for `$...$` (inline) and `$$...$$` (display) delimiters. Replace each with server-side rendered HTML using `katex.renderToString(latex, {displayMode: true/false})` via Node.js or `latex2mathml.converter.convert(latex)` via Python. WeasyPrint does not execute JavaScript. All math must be rendered to HTML/MathML/SVG before the PDF engine sees the document. If no LaTeX delimiters are found, this step is a no-op.
+12. Add a hidden book-title element for running headers: `<span class="book-title-string">BOOK TITLE</span>` immediately after `<main>` opens. WeasyPrint reads its `string-set` property to populate verso running headers.
+13. Render PDF via WeasyPrint: `weasyprint book.html book.pdf`. No JavaScript dependency. No wait-for-render timing. Ensure `<html lang="en">` for hyphenation.
 
 WeasyPrint is the only permitted PDF producer.
 
@@ -193,13 +194,17 @@ Convert each chapter markdown to XHTML:
 - Add `xmlns="http://www.w3.org/1999/xhtml"` to the `<html>` root element
 - Self-close all void tags: `<br/>`, `<img/>`, `<hr/>`
 - Ensure all tags are properly closed (XHTML is strict XML)
+- Strip residual markdown headers: apply the same stripping as PDF stage 3. Any `<p>` whose text begins with `# ` is a markdown header that survived conversion — remove it. The chapter's heading elements are generated from the architecture, not from inline markdown.
+- `dc:date` in `content.opf` must be ISO 8601 format (e.g. `2026-10`), not prose (e.g. "October 2026")
+- `bibliography.xhtml` must be included in both the OPF manifest and the spine. The bibliography is back matter that appears after the last chapter.
 
 ### OPF manifest and spine
 
 Generate `content.opf` from `book/architecture.json`:
 - `<metadata>`: `dc:title` from spine.json, `dc:creator` from user, `dc:language` (default `en`), `dc:identifier` (generated UUID), `dcterms:modified` (ISO 8601 timestamp)
 - `<manifest>`: list every XHTML file, the CSS, all images, the nav, and the cover
-- `<spine>`: list items in reading order — title, TOC, part1, ch01, ch01-notes, ch02, ..., bibliography
+- `<spine>`: list items in reading order — title, TOC, part1, ch01, ch01-notes, ch02, ..., bibliography. The bibliography MUST be included as `bibliography.xhtml` in both the manifest and spine, after the last chapter's endnotes. Omitting it from the ePub when the PDF has one is a bug.
+- `<dc:date>` MUST use ISO 8601 format (`YYYY-MM` or `YYYY-MM-DD`), not natural language dates like "October 2026"
 - Cover image declared with `properties="cover-image"` in manifest
 
 ### nav.xhtml TOC
@@ -212,7 +217,17 @@ Generate from the part/chapter hierarchy in `architecture.json`:
 
 In chapter XHTML: `<a epub:type="noteref" href="chNN-notes.xhtml#n1"><sup>1</sup></a>`
 
-In endnote XHTML: `<aside epub:type="footnote" id="n1">` containing the citation text and clickable source `<a href="https://...">` URL.
+In endnote XHTML, each note MUST use `<aside epub:type="footnote">`, NOT `<ol><li>`:
+
+```html
+<aside epub:type="footnote" id="n1">
+  <p>1. Citation text. <a href="https://source.url">Source</a></p>
+</aside>
+```
+
+Do NOT use `<ol><li>` for ePub endnotes. The `<aside epub:type="footnote">` wrapper is required for popup footnotes on iBooks, Kobo, and Kindle. Without it, readers see flat endnote lists instead of interactive popups.
+
+Each chapter's endnotes MUST be in a separate file (`chNN-notes.xhtml`), not inlined in the chapter XHTML. This separation is what enables cross-file `noteref` linking.
 
 iBooks and Kobo render these as popup footnotes. Kindle converts them to popup endnotes automatically.
 
@@ -250,9 +265,9 @@ Write the assembled ePub to `book/output/<topic-slug>.epub`.
 
 ## Failure handling
 
-If the browser print returns non-zero, the renderer:
+If WeasyPrint returns non-zero, the renderer:
 
-1. Logs the browser stderr.
+1. Logs the WeasyPrint stderr.
 2. Does not emit a PDF.
 3. Exits with a non-zero code.
 
